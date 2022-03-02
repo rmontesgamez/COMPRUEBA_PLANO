@@ -41,6 +41,8 @@ def calcula_area(referencia_plano):
             c = tuple(map(lambda x, y: round(y - x, 3), punto_1, punto_2.format('xyz')))
         elif type(punto_2) == tuple:
             c = tuple(map(lambda x, y: round(y - x, 3), punto_1.format('xyz'), punto_2))
+        else:
+            c = tuple(map(lambda x, y: round(y - x, 3), punto_1, punto_2))
 
 
         """if punto_1.dxftype()=='VERTEX':
@@ -105,9 +107,9 @@ def calcula_area(referencia_plano):
         print(e.dxf.radius)
         print(e.start_point)
         print(e.end_point)
-        if e.dxf.radius>1:
+        if e.dxf.radius>5 and distancia(e.start_point, e.end_point)>2:
         
-            for inicio_segmento in e.flattening(1):
+            for inicio_segmento in e.flattening(3):
                 #print(rrr)
                 if ezdxf.math.is_close_points(inicio_segmento, e.start_point,0.01):
                     p1=inicio_segmento
@@ -119,6 +121,7 @@ def calcula_area(referencia_plano):
         else :
             msp.add_line(e.start_point, e.end_point)
             msp.delete_entity(e)
+        doc.saveas("new_name.dxf")
 
     while len(msp)>=len(diccionario_elementos):
         z+=1
@@ -157,7 +160,7 @@ def calcula_area(referencia_plano):
                     #break
 
                 if e.dxftype() == "LINE":
-                    print(e)
+                    #print(e)
                     inicio = e.dxf.start.xyz+(0,0)
                     final = e.dxf.end.xyz +(0,0)
             
