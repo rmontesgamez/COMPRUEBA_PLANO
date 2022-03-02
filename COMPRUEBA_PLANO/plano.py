@@ -93,14 +93,15 @@ def calcula_area(referencia_plano):
             #doc.layers.remove(layer.dxf.name)"""
 
 
-
-    for e in msp:
-        print(e.dxf.color)
-        if e.dxf.layer in lista_capas:
-            msp.delete_entity(e)
-        else:
-            if e.dxf.color !=256:
+    while len(msp)>=len(diccionario_elementos):
+        for e in msp and e.dxf.handle not in diccionario_elementos:
+            print(e.dxf.color)
+            if e.dxf.layer in lista_capas:
                 msp.delete_entity(e)
+                break
+            else:
+                if e.dxf.color !=256:
+                    msp.delete_entity(e)
 
 
     for e in msp.query("ARC"):
