@@ -85,6 +85,7 @@ def calcula_area(referencia_plano):
     elementos = len(msp)
     lista_area = []
     lista_elementos=[]
+    diccionario_elementos={}
     lista_capas=("GREEN", "BLACK", "YELLOW", "RED")
 
     """for layer in doc.layers:
@@ -93,26 +94,27 @@ def calcula_area(referencia_plano):
             #doc.layers.remove(layer.dxf.name)"""
 
 
-    while len(msp)>=len(lista_elementos):
-        for e in msp and e.dxf.handle not in lista_elementos:
-            print(e.dxf.color)
-            if e.dxf.layer in lista_capas:
-                msp.delete_entity(e)
-                break
-            elif e.dxf.color !=256:
-                msp.delete_entity(e)
-                break
-            else:
-                lista_elementos.append(e.dxf.handle)
+    while len(msp)>len(lista_elementos):
+        for e in msp:
+            if e.dxf.handle not in lista_elementos:
+                print(e.dxf.color)
+                if e.dxf.layer in lista_capas:
+                    msp.delete_entity(e)
+                    break
+                elif e.dxf.color !=256:
+                    msp.delete_entity(e)
+                    break
+                else:
+                     lista_elementos.append(e.dxf.handle)
 
     while msp.query("ARC"):
         for e in msp.query("ARC"):
             print(e.dxf.radius)
             print(e.start_point)
             print(e.end_point)
-            if e.dxf.radius>5 and distancia(e.start_point, e.end_point)>2:
+            if e.dxf.radius>4 and distancia(e.start_point, e.end_point)>1:
         
-                for inicio_segmento in e.flattening(3):
+                for inicio_segmento in e.flattening(1):
                     #print(rrr)
                     if ezdxf.math.is_close_points(inicio_segmento, e.start_point,0.01):
                         p1=inicio_segmento
@@ -120,7 +122,7 @@ def calcula_area(referencia_plano):
                     else:
                         msp.add_line(p1, inicio_segmento)
                         p1=inicio_segmento
-        
+                msp.delete_entity(e)
             else :
                 msp.add_line(e.start_point, e.end_point)
                 msp.delete_entity(e)
