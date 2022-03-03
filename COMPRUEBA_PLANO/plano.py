@@ -84,7 +84,7 @@ def calcula_area(referencia_plano):
     z=0
     elementos = len(msp)
     lista_area = []
-    diccionario_elementos={}
+    lista_elementos=[]
     lista_capas=("GREEN", "BLACK", "YELLOW", "RED")
 
     """for layer in doc.layers:
@@ -93,36 +93,38 @@ def calcula_area(referencia_plano):
             #doc.layers.remove(layer.dxf.name)"""
 
 
-    while len(msp)>=len(diccionario_elementos):
-        for e in msp and e.dxf.handle not in diccionario_elementos:
+    while len(msp)>=len(lista_elementos):
+        for e in msp and e.dxf.handle not in lista_elementos:
             print(e.dxf.color)
             if e.dxf.layer in lista_capas:
                 msp.delete_entity(e)
                 break
+            elif e.dxf.color !=256:
+                msp.delete_entity(e)
+                break
             else:
-                if e.dxf.color !=256:
-                    msp.delete_entity(e)
+                lista_elementos.append(e.dxf.handle)
 
-
-    for e in msp.query("ARC"):
-        print(e.dxf.radius)
-        print(e.start_point)
-        print(e.end_point)
-        if e.dxf.radius>5 and distancia(e.start_point, e.end_point)>2:
+    while msp.query("ARC"):
+        for e in msp.query("ARC"):
+            print(e.dxf.radius)
+            print(e.start_point)
+            print(e.end_point)
+            if e.dxf.radius>5 and distancia(e.start_point, e.end_point)>2:
         
-            for inicio_segmento in e.flattening(3):
-                #print(rrr)
-                if ezdxf.math.is_close_points(inicio_segmento, e.start_point,0.01):
-                    p1=inicio_segmento
+                for inicio_segmento in e.flattening(3):
+                    #print(rrr)
+                    if ezdxf.math.is_close_points(inicio_segmento, e.start_point,0.01):
+                        p1=inicio_segmento
                 
-                else:
-                    msp.add_line(p1, inicio_segmento)
-                    p1=inicio_segmento
+                    else:
+                        msp.add_line(p1, inicio_segmento)
+                        p1=inicio_segmento
         
-        else :
-            msp.add_line(e.start_point, e.end_point)
-            msp.delete_entity(e)
-        doc.saveas("new_name.dxf")
+            else :
+                msp.add_line(e.start_point, e.end_point)
+                msp.delete_entity(e)
+            doc.saveas("new_name.dxf")
 
     while len(msp)>=len(diccionario_elementos):
         z+=1
